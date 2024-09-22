@@ -112,7 +112,8 @@ class ListRecursion:
         # is an integer add it to our results, otherwise we want to recurse
         for element in the_list:
             if type(element) == list:
-                list_values += self.flatten_recursive(element)
+                if len(element):
+                    list_values += self.flatten_recursive(element)
             else:
                 list_values.append(element)
 
