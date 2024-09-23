@@ -130,7 +130,7 @@ class ListRecursion:
 
         :return: list of the flattened values
         """
-        list_values = deque([])
+        list_values = deque()
         list_queue = deque(self.the_list)
 
         # Take value from the stack and if it is a value then add it to results
