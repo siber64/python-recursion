@@ -32,23 +32,37 @@ def test_list_recursion_create_list(depth):
         depth -= 1
 
 
-def test_list_recursion_flatten_recursive(mocker):
+@pytest.mark.parametrize("nested_list, flat_list_limit",
+         ( ([1, 2, 3, [4, 5, [6, 7, 8, 9, [10, 11, 12, 13, 14], 15]]], 15),
+           ([[]], 0),([], 0),([[],[1,2],[]], 2) # Check handles empty lists
+         )
+         )
+def test_list_recursion_flatten(mocker, nested_list, flat_list_limit):
     """
-    Test that the list is flattened correctly using the recursive approach
+    Test that the list is flattened correctly using the recursive and stack
+    approach and
+    check that it manages empty lists in various configurations
+
     :param mocker: mocker fixture
+    :param nested_list: The list that will be flattened
+    :param flat_list_limit: The limit of the flattened list to generate a
+    list                    sequence that will be the expected result
     :return:
     """
     # Override the creation so that we can assert the result
-    mocker.patch.object(ListRecursion, "create_list",
-        return_value=[1, 2, 3, [4, 5, [6, 7, 8, 9, [10, 11, 12, 13, 14]]], 15])
+    mocker.patch.object(ListRecursion, "create_list", return_value=nested_list)
     list_recursion = ListRecursion(4)
-    flat_values = list_recursion.flatten_recursive()
-    assert flat_values == [i for i in range (1, 15 + 1)]
+    flat_values_recursive = list_recursion.flatten_recursive()
+    flat_values_stack = list_recursion.flatten_stack()
+    assert flat_values_recursive == flat_values_stack == [i for i in range (1, flat_list_limit + 1)]
 
 
 def test_list_recursion_flatten_recursive_too_big():
     """
+    This test demonstrates that the recursive approach will fail if the nesting
+    depth is too big for the Python recursion limit
 
+    :param mocker: mocker fixture
     :return:
     """
     list_recursion = ListRecursion(1000)

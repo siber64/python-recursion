@@ -112,7 +112,8 @@ class ListRecursion:
         # is an integer add it to our results, otherwise we want to recurse
         for element in the_list:
             if type(element) == list:
-                list_values += self.flatten_recursive(element)
+                if len(element):
+                    list_values += self.flatten_recursive(element)
             else:
                 list_values.append(element)
 
@@ -129,7 +130,7 @@ class ListRecursion:
 
         :return: list of the flattened values
         """
-        list_values = deque([])
+        list_values = deque()
         list_queue = deque(self.the_list)
 
         # Take value from the stack and if it is a value then add it to results
